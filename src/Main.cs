@@ -25,12 +25,20 @@ namespace AudicaModding
         {
             var i = HarmonyInstance.Create("ArenaLoader");
             Hooks.ApplyHooks(i);
+            CheckArenaFolder();
             arenaFiles = FindArenas();
             LoadAllFoundArenas();
             GetArenaNamesFromFile();
             PlayerPrefs.SetString("environment_name", "environment1");
         }
 
+        private void CheckArenaFolder()
+        {
+            if(!Directory.Exists(Application.dataPath + "/../Mods/Arenas/"))
+            {
+                Directory.CreateDirectory(Application.dataPath + "/../Mods/Arenas/");
+            }
+        }
         private void LoadAllFoundArenas()
         {
             foreach (string arenaPath in arenaFiles)
