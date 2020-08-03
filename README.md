@@ -12,7 +12,7 @@ A mod to load custom arenas for the game Audica.
 ## Creating your own arena
 
 * Download [Unity 2018.4.6](https://unity3d.com/get-unity/download/archive)
-* Get the Unity Project [here](https://drive.google.com/drive/u/1/folders/1yEKkOwodSILSm7Y2o1Co_f-lLSATCL25)
+* Get the Unity Project [here](https://drive.google.com/file/d/1yw6wXblnhMXYsovsKcvuuAQA_nQ0TmCP/view?usp=sharing)
 * Add the project to your Unity Hub by selecting by extracting and selecting the project folder
 * Duplicate ane of the scenes and use them as templates, modify the scene however you want.
 * Add the scene to the asset labels with the name of your scene + `.arena`. Like [this](https://i.imgur.com/uxczfuz.png)
