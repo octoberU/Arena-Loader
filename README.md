@@ -18,5 +18,6 @@ A mod to load custom arenas for the game Audica.
 * Add the scene to the asset labels with the name of your scene + `.arena`. Like [this](https://i.imgur.com/uxczfuz.png)
 * Export the arena through "Arena/Export Arena" to a directory of your choice
 * Place the exported `.arena` files in `Audica\Mods\Arenas`
+* **The name of your asset bundle and the scene name has to match in order for the arena to be loaded**
 
 If your arena doesn't load ingame, make sure you're using the right MelonLoader version and that you placed the arenas into the correct folder.
