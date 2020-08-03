@@ -1,8 +1,8 @@
 # Audica Arena Loader
 
-A mod to load custom arenas for the game Audica.
-Get the latest release [here](https://github.com/octoberU/Arena-Loader/releases/latest)
-Get MelonLoader [here](https://github.com/HerpDerpinstine/MelonLoader/releases/latest)
+A mod to load custom arenas for the game Audica.  
+Get the latest release [here](https://github.com/octoberU/Arena-Loader/releases/latest)  
+Get MelonLoader [here](https://github.com/HerpDerpinstine/MelonLoader/releases/latest)  
 
 ## Installation
 
