@@ -1,6 +1,7 @@
 # Audica Arena Loader
 
 A mod to load custom arenas for the game Audica.
+Get the latest release [here](https://github.com/octoberU/Arena-Loader/releases/latest)
 
 ## Installation
 
