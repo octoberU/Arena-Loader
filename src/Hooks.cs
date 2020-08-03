@@ -15,12 +15,12 @@ namespace AudicaModding
 
         private static bool addedEnv = false;
 
-        [HarmonyPatch(typeof(OptionsMenu), "AddEnvButton", new Type[] { typeof(int), typeof(string), typeof(string) })]
+        [HarmonyPatch(typeof(OptionsMenu), "AddEnvButton", new Type[] { typeof(int), typeof(string), typeof(string)})]
         private static class AddEnvButton
         {
             private static void Postfix(OptionsMenu __instance, int col, string buttonLabel, string envString)
             {
-                if(buttonLabel == "The Gate" && !addedEnv)
+                if(envString == "environment5" && !addedEnv)
                 {
                     int column = 1;
                     for (int i = 0; i < AudicaMod.arenaNames.Length; i++)
@@ -33,6 +33,15 @@ namespace AudicaModding
                     }
                     addedEnv = true;
                 }
+            }
+        }
+
+        [HarmonyPatch(typeof(OptionsMenu), "ShowPage", new Type[] { typeof(OptionsMenu.Page) })]
+        private static class ResetButtons
+        {
+            private static void Prefix(OptionsMenu __instance, OptionsMenu.Page page)
+            {
+                addedEnv = false;
             }
         }
 
@@ -69,10 +78,10 @@ namespace AudicaModding
         static List<string> defaultEnvironments = new List<string>
         {
             "environment1",
-            "environemnt2",
+            "environment2",
             "environment3",
-            "environemnt4",
-            "environemnt5",
+            "environment4",
+            "environment5",
         };
     }
 }
