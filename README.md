@@ -27,5 +27,6 @@ Get MelonLoader [here](https://github.com/HerpDerpinstine/MelonLoader/releases/l
 * Make sure that you don't leave cameras in the scene before exporting
 * Some scenes have `Center of circular force` objects in the hierarcy, you can delete to clean up the scene.
 * Custom shaders haven't been tested.
+* Scene name and arena name have to match, make sure to match the case too.
 
 If your arena doesn't load ingame, make sure you're using the right MelonLoader version and that you placed the arenas into the correct folder.
