@@ -60,7 +60,7 @@ namespace AudicaModding
             private static void Postfix(EnvironmentLoader __instance)
             {
                 string nextenv = PlayerPrefs.GetString("environment_name");
-                if (!defaultEnvironments.Contains(nextenv))
+                if (!AudicaMod.defaultEnvironments.Contains(nextenv))
                 {
                     BloomTweak();
                 }
@@ -75,13 +75,5 @@ namespace AudicaModding
             postproc.streakSettings = postproc.gameSettings;
             postproc.failSettings = postproc.gameSettings;
         }
-        static List<string> defaultEnvironments = new List<string>
-        {
-            "environment1",
-            "environment2",
-            "environment3",
-            "environment4",
-            "environment5",
-        };
     }
 }

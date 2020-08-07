@@ -29,7 +29,39 @@ namespace AudicaModding
             arenaFiles = FindArenas();
             LoadAllFoundArenas();
             GetArenaNamesFromFile();
-            PlayerPrefs.SetString("environment_name", "environment1");
+            CheckConfig();
+        }
+
+        private void CheckConfig()
+        {
+            if(!ModPrefs.HasKey("ArenaLoader", "LastArena"))
+            {
+                ModPrefs.RegisterPrefString("ArenaLoader", "LastArena", PlayerPrefs.GetString("environment_name"));
+            }
+            else
+            {
+                LoadLastArena();
+            }       
+        }
+
+        private void LoadLastArena()
+        {
+            string currentArena = ModPrefs.GetString("ArenaLoader", "LastArena");
+            if (ArenaExists(currentArena))
+            {
+                PlayerPrefs.SetString("environment_name", currentArena); 
+            }
+            else
+            {
+                PlayerPrefs.SetString("environment_name", "environment1");
+            }
+        }
+
+        private bool ArenaExists(string currentArena)
+        {
+            bool inDefaultArenas = defaultEnvironments.Contains(currentArena);
+            bool inCustomArenas = arenaNames.Contains(currentArena);
+            return inDefaultArenas || inCustomArenas;
         }
 
         private void CheckArenaFolder()
@@ -59,6 +91,7 @@ namespace AudicaModding
 
         public override void OnApplicationQuit()
         {
+            ModPrefs.SetString("ArenaLoader", "LastArena", PlayerPrefs.GetString("environment_name"));
             PlayerPrefs.SetString("environment_name", "environment1");
         }
 
@@ -77,6 +110,15 @@ namespace AudicaModding
             }
             return arenas;
         }
+
+        public static List<string> defaultEnvironments = new List<string>
+        {
+            "environment1",
+            "environment2",
+            "environment3",
+            "environment4",
+            "environment5",
+        };
     }
 }
 
