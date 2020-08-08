@@ -14,12 +14,14 @@ namespace AudicaModding
             public const string Name = "ArenaLoader";  // Name of the Mod.  (MUST BE SET)
             public const string Author = "octo"; // Author of the Mod.  (Set as null if none)
             public const string Company = null; // Company that made the Mod.  (Set as null if none)
-            public const string Version = "0.1.1"; // Version of the Mod.  (MUST BE SET)
+            public const string Version = "0.1.2"; // Version of the Mod.  (MUST BE SET)
             public const string DownloadLink = null; // Download Link for the Mod.  (Set as null if none
         }
 
         public List<string> arenaFiles;
         public static string[] arenaNames;
+        public static float currentSkyboxRotation;
+        public static float currentSkyboxExposure = 1f;
 
         public override void OnApplicationStart()
         {
@@ -29,19 +31,27 @@ namespace AudicaModding
             arenaFiles = FindArenas();
             LoadAllFoundArenas();
             GetArenaNamesFromFile();
-            CheckConfig();
+            //CheckConfig();
+            PlayerPrefs.SetString("environment_name", "environment1");
         }
+
+        public override void OnApplicationQuit()
+        {
+            ModPrefs.SetString("ArenaLoader", "LastArena", PlayerPrefs.GetString("environment_name"));
+            PlayerPrefs.SetString("environment_name", "environment1");
+        }
+
 
         private void CheckConfig()
         {
-            if(!ModPrefs.HasKey("ArenaLoader", "LastArena"))
+            if (!ModPrefs.HasKey("ArenaLoader", "LastArena"))
             {
                 ModPrefs.RegisterPrefString("ArenaLoader", "LastArena", PlayerPrefs.GetString("environment_name"));
             }
             else
             {
-                LoadLastArena();
-            }       
+                PlayerPrefs.SetString("environment_name", "environment1");
+            }
         }
 
         private void LoadLastArena()
@@ -49,7 +59,7 @@ namespace AudicaModding
             string currentArena = ModPrefs.GetString("ArenaLoader", "LastArena");
             if (ArenaExists(currentArena))
             {
-                PlayerPrefs.SetString("environment_name", currentArena); 
+                PlayerPrefs.SetString("environment_name", currentArena);
             }
             else
             {
@@ -66,7 +76,7 @@ namespace AudicaModding
 
         private void CheckArenaFolder()
         {
-            if(!Directory.Exists(Application.dataPath + "/../Mods/Arenas/"))
+            if (!Directory.Exists(Application.dataPath + "/../Mods/Arenas/"))
             {
                 Directory.CreateDirectory(Application.dataPath + "/../Mods/Arenas/");
             }
@@ -89,11 +99,6 @@ namespace AudicaModding
             }
         }
 
-        public override void OnApplicationQuit()
-        {
-            ModPrefs.SetString("ArenaLoader", "LastArena", PlayerPrefs.GetString("environment_name"));
-            PlayerPrefs.SetString("environment_name", "environment1");
-        }
 
 
         private List<string> FindArenas()
@@ -119,6 +124,17 @@ namespace AudicaModding
             "environment4",
             "environment5",
         };
+
+        public static void RotateSkybox(float amount)
+        {
+            currentSkyboxRotation += amount;
+            RenderSettings.skybox.SetFloat("_Rotation", currentSkyboxRotation);
+        }
+        public static void ChangeExposure(float amount)
+        {
+            currentSkyboxExposure += amount;
+            RenderSettings.skybox.SetFloat("_Exposure", currentSkyboxExposure);
+        }
     }
 }
 
