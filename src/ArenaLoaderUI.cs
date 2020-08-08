@@ -23,17 +23,23 @@ namespace AudicaModding
 		private static void AddButtons(OptionsMenu optionsMenu)
 		{
 			optionsMenu.AddHeader(0, "Skybox controls");
-			
-			var RotationSlider =  optionsMenu.AddSlider(0, "Skybox Rotation", "P",
+
+			var RotationSlider = optionsMenu.AddSlider(0, "Skybox Rotation", "P",
 				new Action<float>(x => { AudicaMod.RotateSkybox(x * 5); }),
 				null);
 			RotationSlider.label.text = "Rotation";
-			
+
 			var ExposureSlider = optionsMenu.AddSlider(1, "Skybox Exposure", "P",
 			new Action<float>(x => { AudicaMod.ChangeExposure(x * 0.05f); }),
 			null);
 			ExposureSlider.label.text = "Brightness";
 
+			var ReflectionSlider = optionsMenu.AddSlider(0, "Skybox Reflection", "P",
+			new Action<float>(x => { AudicaMod.ChangeReflectionStrength(x * 0.05f); }),
+			null);
+			ReflectionSlider.label.text = "Reflection";
+
+			optionsMenu.AddTextBlock(0, "These settings will reset when you enter a new arena. A way to save current arena settings will be added in a future update");
 		}
 
 

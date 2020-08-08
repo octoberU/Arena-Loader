@@ -94,6 +94,7 @@ namespace AudicaModding
                 }
                 AudicaMod.currentSkyboxExposure = 1f;
                 AudicaMod.currentSkyboxRotation = 0f;
+                AudicaMod.currentSkyboxReflection = 1f;
             }
         }
 
