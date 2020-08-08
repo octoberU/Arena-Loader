@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Reflection;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AudicaModding
 {
@@ -50,7 +51,10 @@ namespace AudicaModding
         {
             private static void Postfix(CampaignStructure __instance, CampaignStructure.UnlockType unlockType, string unlockName, ref bool __result)
             {
-                __result = true;
+                if (!AudicaMod.arenaNames.Contains(unlockName))
+                {
+                    __result = true;
+                }
             }
         }
 
