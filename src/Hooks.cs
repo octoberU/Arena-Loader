@@ -46,15 +46,18 @@ namespace AudicaModding
         {
             private static void Postfix(OptionsMenu __instance, int col, string label, OptionsMenuButton.SelectedActionDelegate onSelected, OptionsMenuButton.IsCheckedDelegate isChecked)
             {
-                buttonCount++;
-                if(buttonCount == 18)
+                if (__instance.mPage == OptionsMenu.Page.Main)
                 {
-                    int column = col;
-                    if (column == 1)
-                        column = 0;
-                    else
-                        column = 1;
-                    ArenaLoaderUI.AddArenaCustomizationButton(__instance, column);
+                    buttonCount++;
+                    if (buttonCount == 18)
+                    {
+                        int column = col;
+                        if (column == 1)
+                            column = 0;
+                        else
+                            column = 1;
+                        ArenaLoaderUI.AddArenaCustomizationButton(__instance, column);
+                    } 
                 }
             }
         }
