@@ -30,7 +30,7 @@ namespace AudicaModding
                     int column = 1;
                     for (int i = 0; i < AudicaMod.arenaNames.Length; i++)
                     {
-                        OptionsMenu.I.AddEnvButton(column, AudicaMod.arenaNames[i], AudicaMod.arenaNames[i]);
+                        __instance.AddEnvButton(column, AudicaMod.arenaNames[i], AudicaMod.arenaNames[i]);
                         if (column == 1)
                             column = 0;
                         else
@@ -49,6 +49,7 @@ namespace AudicaModding
                 if (__instance.mPage == OptionsMenu.Page.Main)
                 {
                     buttonCount++;
+                    addedEnv = false;
                     if (buttonCount == 18)
                     {
                         int column = col;
@@ -67,9 +68,18 @@ namespace AudicaModding
         {
             private static void Prefix(OptionsMenu __instance, OptionsMenu.Page page)
             {
-                MelonModLogger.Log(page.ToString());
                 addedEnv = false;
                 buttonCount = 0;
+            }
+        }
+
+
+        [HarmonyPatch(typeof(OptionsMenu), "BackOut", new Type[0])]
+        private static class Backout_AL
+        {
+            private static void Postfix(OptionsMenu __instance)
+            {
+                addedEnv = false;
             }
         }
 
