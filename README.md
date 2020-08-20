@@ -15,8 +15,8 @@ Get MelonLoader [here](https://github.com/HerpDerpinstine/MelonLoader/releases/l
 
 * Download [Unity 2018.4.6](https://unity3d.com/get-unity/download/archive)
 * Get the Unity Project [here](https://drive.google.com/file/d/1yw6wXblnhMXYsovsKcvuuAQA_nQ0TmCP/view?usp=sharing)
-* Add the project to your Unity Hub by selecting by extracting and selecting the project folder
-* Duplicate ane of the scenes and use them as templates, modify the scene however you want.
+* Add the project to your Unity Hub by extracting and selecting the project folder
+* Duplicate one of the existing scenes and use them as templates, modify the scene however you want.
 * Add the scene to the asset labels with the name of your scene + `.arena`. Like [this](https://i.imgur.com/uxczfuz.png)
 * Export the arena through "Arena/Export Arena" to a directory of your choice
 * Place the exported `.arena` files in `Audica\Mods\Arenas`
