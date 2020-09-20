@@ -104,12 +104,14 @@ namespace AudicaModding
                 if (!AudicaMod.defaultEnvironments.Contains(nextenv))
                 {
                     BloomTweak();
+                    MelonCoroutines.Start(ShaderSwap.StartSwap());
                 }
                 AudicaMod.currentSkyboxExposure = 1f;
                 AudicaMod.currentSkyboxRotation = 0f;
                 AudicaMod.currentSkyboxReflection = 1f;
             }
         }
+
 
         static void BloomTweak()
         {

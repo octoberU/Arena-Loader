@@ -188,6 +188,8 @@
     <Compile Include="src\Hooks.cs" />
     <Compile Include="src\Main.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\ReactiveLights.cs" />
+    <Compile Include="src\ShaderSwap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
