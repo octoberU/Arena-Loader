@@ -14,12 +14,6 @@ namespace AudicaModding
         private static int buttonCount = 0;
         private static bool addedEnv = false;
 
-        public static void ApplyHooks(HarmonyInstance instance)
-        {
-            instance.PatchAll(Assembly.GetExecutingAssembly());
-        }
-
-
         [HarmonyPatch(typeof(OptionsMenu), "AddEnvButton", new Type[] { typeof(int), typeof(string), typeof(string)})]
         private static class AddEnvButton
         {
@@ -50,7 +44,7 @@ namespace AudicaModding
                 {
                     buttonCount++;
                     addedEnv = false;
-                    if (buttonCount == 18)
+                    if (buttonCount == 9)
                     {
                         int column = col;
                         if (column == 1)
