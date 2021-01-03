@@ -5,7 +5,7 @@ using Harmony;
 
 internal static class ReactiveLightUpdater
 {
-    public static ReactiveLight[] ReactiveLights;
+    public static ReactiveLight[] ReactiveLights = new ReactiveLight[0];
     public static void GetLightsInScene()
     {
         ReactiveLights = new ReactiveLight[0];

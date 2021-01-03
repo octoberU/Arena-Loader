@@ -130,6 +130,10 @@
     <Reference Include="UnityEngine.Il2CppAssetBundleManager">
       <HintPath>E:\Steam\steamapps\common\Audica\MelonLoader\Managed\UnityEngine.Il2CppAssetBundleManager.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.Il2CppImageConversionManager, Version=0.2.7.3, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Steam\steamapps\common\Audica\MelonLoader\Managed\UnityEngine.Il2CppImageConversionManager.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>lib\UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
@@ -185,11 +189,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\ArenaLoaderUI.cs" />
+    <Compile Include="src\Config.cs" />
     <Compile Include="src\Hooks.cs" />
     <Compile Include="src\Main.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\ReactiveLights.cs" />
     <Compile Include="src\ShaderSwap.cs" />
+    <Compile Include="src\SkyboxLoader.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

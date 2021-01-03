@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using MelonLoader;
+using ArenaLoader;
+using UnityEngine.SceneManagement;
 
 namespace AudicaModding
 {
@@ -22,9 +24,9 @@ namespace AudicaModding
                 if(envString == "environment5" && !addedEnv)
                 {
                     int column = 1;
-                    for (int i = 0; i < AudicaMod.arenaNames.Length; i++)
+                    for (int i = 0; i < ArenaLoaderMod.arenaNames.Count; i++)
                     {
-                        __instance.AddEnvButton(column, AudicaMod.arenaNames[i], AudicaMod.arenaNames[i]);
+                        __instance.AddEnvButton(column, ArenaLoaderMod.arenaNames[i], ArenaLoaderMod.arenaNames[i]);
                         if (column == 1)
                             column = 0;
                         else
@@ -82,38 +84,13 @@ namespace AudicaModding
         {
             private static void Postfix(CampaignStructure __instance, CampaignStructure.UnlockType unlockType, string unlockName, ref bool __result)
             {
-                if (AudicaMod.arenaNames.Contains(unlockName))
+                if (ArenaLoaderMod.arenaNames.Contains(unlockName))
                 {
                     __result = true;
                 }
             }
         }
 
-        [HarmonyPatch(typeof(EnvironmentLoader), "SwitchEnvironment", new Type[0])]
-        private static class AdjustBloom
-        {
-            private static void Postfix(EnvironmentLoader __instance)
-            {
-                string nextenv = PlayerPrefs.GetString("environment_name");
-                if (!AudicaMod.defaultEnvironments.Contains(nextenv))
-                {
-                    BloomTweak();
-                    MelonCoroutines.Start(ShaderSwap.StartSwap());
-                }
-                AudicaMod.currentSkyboxExposure = 1f;
-                AudicaMod.currentSkyboxRotation = 0f;
-                AudicaMod.currentSkyboxReflection = 1f;
-            }
-        }
 
-
-        static void BloomTweak()
-        {
-            PostprocController postproc = UnityEngine.Object.FindObjectOfType<PostprocController>();
-            postproc.mOriginalBloomIntensity = 0.5f;
-            postproc.peakSettings = postproc.gameSettings;
-            postproc.streakSettings = postproc.gameSettings;
-            postproc.failSettings = postproc.gameSettings;
-        }
     }
 }

@@ -1,81 +1,131 @@
 using MelonLoader;
 using UnityEngine;
-using Harmony;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using ArenaLoader;
+using System.Reflection;
 
-namespace AudicaModding
+[assembly: AssemblyVersion(ArenaLoaderMod.VERSION)]
+[assembly: AssemblyFileVersion(ArenaLoaderMod.VERSION)]
+[assembly: MelonGame("Harmonix Music Systems, Inc.", "Audica")]
+[assembly: MelonInfo(typeof(ArenaLoaderMod), "Arena Loader", ArenaLoaderMod.VERSION, "octo", "https://github.com/octoberU/Arena-Loader")]
+
+namespace ArenaLoader
 {
-    public class AudicaMod : MelonMod
+    public class ArenaLoaderMod : MelonMod
     {
-        public static class BuildInfo
+        public const string VERSION = "0.2.2";
+
+        public static string ArenaDirectory => Path.Combine(Directory.GetParent(Application.dataPath).ToString(), "Mods", "Arenas");
+        public static string SkyboxDirectory => Path.Combine(ArenaDirectory, "Skyboxes");
+
+        public static SkyboxLoader skyboxLoader = new SkyboxLoader();
+
+        /// <summary>
+        /// Returns a list of .arena file paths.
+        /// </summary>
+        public string[] ArenaFiles
         {
-            public const string Name = "ArenaLoader";  // Name of the Mod.  (MUST BE SET)
-            public const string Author = "octo"; // Author of the Mod.  (Set as null if none)
-            public const string Company = null; // Company that made the Mod.  (Set as null if none)
-            public const string Version = "0.2.0"; // Version of the Mod.  (MUST BE SET)
-            public const string DownloadLink = null; // Download Link for the Mod.  (Set as null if none
+            get
+            {
+                string[] files = Directory.GetFiles(ArenaDirectory);
+                return files.Where(x => x.Contains(".arena")).ToArray();
+            }
         }
 
-        public List<string> arenaFiles;
-        public static string[] arenaNames;
-        public static float currentSkyboxRotation;
-        public static float currentSkyboxExposure = 1f;
-        public static float currentSkyboxReflection = 1f;
+        public static void UpdateSkybox(Material material)
+        {
+            SkyboxLoader.SetSkybox(material);
+            if (SceneReflection == null)
+            {
+                var reflectionObject = new GameObject();
+                var sceneReflection = reflectionObject.AddComponent<ReflectionProbe>();
+            }
+            SceneReflection.size = new Vector3(5000f, 5000f, 5000f);
+            SceneReflection.mode = UnityEngine.Rendering.ReflectionProbeMode.Baked;
+            SceneReflection.farClipPlane = 0.02f;
+            SceneReflection.nearClipPlane = 0.01f;
+            SceneReflection.mode = UnityEngine.Rendering.ReflectionProbeMode.Realtime;
+            SceneReflection.refreshMode = UnityEngine.Rendering.ReflectionProbeRefreshMode.ViaScripting;
+            SceneReflection.RenderProbe();
+        }
+
+        public static float CurrentSkyboxExposure
+        {
+            get => currentSkyboxExposure; 
+            set
+            {
+                if (!(value > 1.0f || value < 0.0f)) currentSkyboxExposure = value;
+            }
+        }
+
+        
+
+        public static List<string> arenaNames = new List<string>();
+        
+        public static float currentSkyboxRotation = 0f;
+        private static float currentSkyboxExposure = 1f;
+        private static float currentSkyboxReflection = 1f;
+
+        private static ReflectionProbe sceneReflection;
+        public static ReflectionProbe SceneReflection
+        {
+            get
+            {
+                if (sceneReflection != null) return sceneReflection;
+                else
+                {
+                    sceneReflection = GameObject.FindObjectOfType<ReflectionProbe>(); // Only get an instance of probes if they're null
+                    return sceneReflection;
+                }
+            }
+        }
+
+        public static float CurrentSkyboxReflection
+        {
+            get => currentSkyboxReflection;
+            set
+            {
+                if (!(value > 1.0f || value < 0.0f)) currentSkyboxReflection = value;
+            }
+        }
 
         public override void OnApplicationStart()
         {
-            var i = HarmonyInstance.Create("ArenaLoader");
-            Hooks.ApplyHooks(i);
-            CheckArenaFolder();
-            arenaFiles = FindArenas();
+            Config.RegisterConfig();
+            CreateArenaFolder();
             LoadAllFoundArenas();
-            GetArenaNamesFromFile();
-            //CheckConfig();
             PlayerPrefs.SetString("environment_name", "environment1");
+            //EnvironmentLoader.I.SwitchEnvironment();
+        }
+
+        public override void OnModSettingsApplied()
+        {
+            Config.OnModSettingsApplied();
+            string currentArena = PlayerPrefs.GetString("environment_name");
+            if (!defaultEnvironments.Contains(currentArena)) TweakBloom(Config.bloomAmount);
         }
 
         public override void OnApplicationQuit()
         {
-            ModPrefs.SetString("ArenaLoader", "LastArena", PlayerPrefs.GetString("environment_name"));
-            PlayerPrefs.SetString("environment_name", "environment1");
+            string currentArena = PlayerPrefs.GetString("environment_name");
+            if (!defaultEnvironments.Contains(currentArena)) PlayerPrefs.SetString("environment_name", "environment1");
         }
 
-
-        private void CheckConfig()
+        public override void OnLevelWasLoaded(int level)
         {
-            if (!ModPrefs.HasKey("ArenaLoader", "LastArena"))
+            if(level == -1) // Only initiate shader swap on custom arenas.
             {
-                ModPrefs.RegisterPrefString("ArenaLoader", "LastArena", PlayerPrefs.GetString("environment_name"));
-            }
-            else
-            {
-                PlayerPrefs.SetString("environment_name", "environment1");
-            }
-        }
-
-        private void LoadLastArena()
-        {
-            string currentArena = ModPrefs.GetString("ArenaLoader", "LastArena");
-            if (ArenaExists(currentArena))
-            {
-                PlayerPrefs.SetString("environment_name", currentArena);
-            }
-            else
-            {
-                PlayerPrefs.SetString("environment_name", "environment1");
+                MelonCoroutines.Start(ShaderSwap.StartSwap());
+                TweakBloom(Config.bloomAmount);
+                CurrentSkyboxExposure = 1f;
+                CurrentSkyboxReflection = 1f;
+                currentSkyboxRotation = 0f;
             }
         }
 
-        private bool ArenaExists(string currentArena)
-        {
-            bool inDefaultArenas = defaultEnvironments.Contains(currentArena);
-            bool inCustomArenas = arenaNames.Contains(currentArena);
-            return inDefaultArenas || inCustomArenas;
-        }
-
-        private void CheckArenaFolder()
+        private void CreateArenaFolder()
         {
             if (!Directory.Exists(Application.dataPath + "/../Mods/Arenas/"))
             {
@@ -84,40 +134,29 @@ namespace AudicaModding
         }
         private void LoadAllFoundArenas()
         {
-            foreach (string arenaPath in arenaFiles)
+            foreach (string arenaPath in ArenaFiles)
             {
-                Il2CppAssetBundleManager.LoadFromFile(arenaPath);
-            }
-        }
-
-        private void GetArenaNamesFromFile()
-        {
-            arenaNames = new string[arenaFiles.Count];
-            for (int i = 0; i < arenaFiles.Count; i++)
-            {
-                string arena = arenaFiles[i].Split('/').Last().Replace(".arena", "");
-                arenaNames[i] = arena;
-            }
-        }
-
-
-
-        private List<string> FindArenas()
-        {
-            string[] files = Directory.GetFiles(Application.dataPath + "/../Mods/Arenas/");
-            List<string> arenas = new List<string>();
-            foreach (string file in files)
-            {
-                if (file.Contains(".arena"))
+                var bundle = Il2CppAssetBundleManager.LoadFromFile(arenaPath);
+                string[] scenePaths = bundle.GetAllScenePaths();
+                foreach (var path in scenePaths)
                 {
-                    arenas.Add(file);
-                    MelonModLogger.Log(file);
+                    string foundScene = System.IO.Path.GetFileNameWithoutExtension(path);
+                    arenaNames.Add(foundScene);
                 }
             }
-            return arenas;
         }
 
-        public static List<string> defaultEnvironments = new List<string>
+        public static bool HasScene(string sceneName)
+        {
+            bool hasScene = false;
+            for (int i = 0; i < arenaNames.Count; i++)
+            {
+                if (arenaNames[i] == sceneName) hasScene = true;
+            }
+            return hasScene;
+        }
+
+        public static string[] defaultEnvironments = 
         {
             "environment1",
             "environment2",
@@ -125,7 +164,6 @@ namespace AudicaModding
             "environment4",
             "environment5",
         };
-
         public static void RotateSkybox(float amount)
         {
             currentSkyboxRotation += amount;
@@ -133,16 +171,20 @@ namespace AudicaModding
         }
         public static void ChangeExposure(float amount)
         {
-            currentSkyboxExposure += amount;
-            RenderSettings.skybox.SetFloat("_Exposure", currentSkyboxExposure);
+            CurrentSkyboxExposure += amount;
+            RenderSettings.skybox.SetFloat("_Exposure", CurrentSkyboxExposure);
         }
         public static void ChangeReflectionStrength(float amount)
         {
-            currentSkyboxReflection += amount;
-            RenderSettings.reflectionIntensity = currentSkyboxReflection;
+            CurrentSkyboxReflection += amount;
+            RenderSettings.reflectionIntensity = CurrentSkyboxReflection;
+            if(SceneReflection != null) SceneReflection.intensity = CurrentSkyboxReflection;
         }
-
-
+        public static void TweakBloom(float bloomAmount = 0.5f)
+        {
+            PostprocController postproc = GameObject.FindObjectOfType<PostprocController>();
+            postproc.mOriginalBloomIntensity = bloomAmount;
+        }
     }
 }
 
