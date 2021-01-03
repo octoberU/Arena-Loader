@@ -94,7 +94,7 @@ namespace ArenaLoader
         public override void OnApplicationStart()
         {
             Config.RegisterConfig();
-            CreateArenaFolder();
+            CreateArenaFolders();
             LoadAllFoundArenas();
             PlayerPrefs.SetString("environment_name", "environment1");
             //EnvironmentLoader.I.SwitchEnvironment();
@@ -125,11 +125,15 @@ namespace ArenaLoader
             }
         }
 
-        private void CreateArenaFolder()
+        private void CreateArenaFolders()
         {
-            if (!Directory.Exists(Application.dataPath + "/../Mods/Arenas/"))
+            if (!Directory.Exists(ArenaDirectory))
             {
-                Directory.CreateDirectory(Application.dataPath + "/../Mods/Arenas/");
+                Directory.CreateDirectory(ArenaDirectory);
+            }
+            if (!Directory.Exists(SkyboxDirectory))
+            {
+                Directory.CreateDirectory(SkyboxDirectory);
             }
         }
         private void LoadAllFoundArenas()
