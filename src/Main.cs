@@ -1,10 +1,10 @@
-using MelonLoader;
-using UnityEngine;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
 using ArenaLoader;
+using MelonLoader;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 [assembly: AssemblyVersion(ArenaLoaderMod.VERSION)]
 [assembly: AssemblyFileVersion(ArenaLoaderMod.VERSION)]
@@ -15,8 +15,7 @@ namespace ArenaLoader
 {
     public class ArenaLoaderMod : MelonMod
     {
-        public const string VERSION = "0.2.2";
-
+        public const string VERSION = "0.2.3";
         public static string ArenaDirectory => Path.Combine(Directory.GetParent(Application.dataPath).ToString(), "Mods", "Arenas");
         public static string SkyboxDirectory => Path.Combine(ArenaDirectory, "Skyboxes");
 
@@ -53,17 +52,17 @@ namespace ArenaLoader
 
         public static float CurrentSkyboxExposure
         {
-            get => currentSkyboxExposure; 
+            get => currentSkyboxExposure;
             set
             {
                 if (!(value > 1.0f || value < 0.0f)) currentSkyboxExposure = value;
             }
         }
 
-        
+
 
         public static List<string> arenaNames = new List<string>();
-        
+
         public static float currentSkyboxRotation = 0f;
         private static float currentSkyboxExposure = 1f;
         private static float currentSkyboxReflection = 1f;
@@ -97,7 +96,6 @@ namespace ArenaLoader
             CreateArenaFolders();
             LoadAllFoundArenas();
             PlayerPrefs.SetString("environment_name", "environment1");
-            //EnvironmentLoader.I.SwitchEnvironment();
         }
 
         public override void OnModSettingsApplied()
@@ -110,12 +108,13 @@ namespace ArenaLoader
         public override void OnApplicationQuit()
         {
             string currentArena = PlayerPrefs.GetString("environment_name");
+            Config.lastArena = currentArena;
             if (!defaultEnvironments.Contains(currentArena)) PlayerPrefs.SetString("environment_name", "environment1");
         }
 
         public override void OnLevelWasLoaded(int level)
         {
-            if(level == -1) // Only initiate shader swap on custom arenas.
+            if (level == -1) // Only initiate shader swap on custom arenas.
             {
                 MelonCoroutines.Start(ShaderSwap.StartSwap());
                 TweakBloom(Config.bloomAmount);
@@ -124,6 +123,7 @@ namespace ArenaLoader
                 currentSkyboxRotation = 0f;
             }
         }
+
 
         private void CreateArenaFolders()
         {
@@ -150,17 +150,10 @@ namespace ArenaLoader
             }
         }
 
-        public static bool HasScene(string sceneName)
-        {
-            bool hasScene = false;
-            for (int i = 0; i < arenaNames.Count; i++)
-            {
-                if (arenaNames[i] == sceneName) hasScene = true;
-            }
-            return hasScene;
-        }
+        public static bool HasScene(string sceneName) => 
+            defaultEnvironments.Contains(sceneName) || arenaNames.Contains(sceneName);
 
-        public static string[] defaultEnvironments = 
+        public static string[] defaultEnvironments =
         {
             "environment1",
             "environment2",
@@ -182,7 +175,7 @@ namespace ArenaLoader
         {
             CurrentSkyboxReflection += amount;
             RenderSettings.reflectionIntensity = CurrentSkyboxReflection;
-            if(SceneReflection != null) SceneReflection.intensity = CurrentSkyboxReflection;
+            if (SceneReflection != null) SceneReflection.intensity = CurrentSkyboxReflection;
         }
         public static void TweakBloom(float bloomAmount = 0.5f)
         {

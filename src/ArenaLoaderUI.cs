@@ -43,13 +43,16 @@ namespace ArenaLoader
 			optionsMenu.AddTextBlock(0, "These settings will reset when you enter a new arena. A way to save current arena settings will be added in a future update");
 
 			optionsMenu.AddHeader(0, "Custom skybox");
-            optionsMenu.AddSlider(0, "Custom Skybox", null, new Action<float>((amount) => { ArenaLoaderMod.skyboxLoader.Index += (int)amount;}), new Func<float>(() => { return (float)ArenaLoaderMod.skyboxLoader.Index; }), new Action(() => { ArenaLoaderMod.skyboxLoader.Index = 0; }), "Skybox to load", new Func<float, string>((amount) => 
+            OptionsMenuSlider skyboxSlider = optionsMenu.AddSlider(0, "Custom Skybox", null, new Action<float>((amount) => { ArenaLoaderMod.skyboxLoader.Index += (int)amount;}), new Func<float>(() => { return (float)ArenaLoaderMod.skyboxLoader.Index; }), new Action(() => { ArenaLoaderMod.skyboxLoader.Index = 0; }), "Skybox to load", new Func<float, string>((amount) => 
 			{
                 if(ArenaLoaderMod.skyboxLoader.skyboxes.Count == 0) return "Skybox folder is empty";
 				Material currentSkybox = ArenaLoaderMod.skyboxLoader.skyboxes[ArenaLoaderMod.skyboxLoader.Index];
 				if (currentSkybox != null) return currentSkybox.name;
 				else return "Skybox folder is empty";
 			}), optionsMenu.sliderCustomModelPrefab);
+
+			skyboxSlider.transform.Find("reload").gameObject.SetActive(false); // Disables the reload icon.
+
 			optionsMenu.AddButton(0, "Apply skybox", new Action(() =>
 			{
 				if (ArenaLoaderMod.skyboxLoader.skyboxes.Count == 0) return;

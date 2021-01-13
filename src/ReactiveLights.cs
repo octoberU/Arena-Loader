@@ -5,12 +5,13 @@ using Harmony;
 
 internal static class ReactiveLightUpdater
 {
-    public static ReactiveLight[] ReactiveLights = new ReactiveLight[0];
+    public static List<ReactiveLight> ReactiveLights = new List<ReactiveLight>();
     public static void GetLightsInScene()
     {
-        ReactiveLights = new ReactiveLight[0];
+        ReactiveLights = new List<ReactiveLight>();
         var lights = GameObject.FindObjectsOfType<Light>();
-        List<ReactiveLight> tempList = new List<ReactiveLight>();
+        
+        var tempList = new List<ReactiveLight>();
         for (int i = 0; i < lights.Length; i++)
         {
             if (lights[i].gameObject.name.Contains("ReactiveLight"))
@@ -18,18 +19,14 @@ internal static class ReactiveLightUpdater
                 tempList.Add(new ReactiveLight(lights[i]));
             }
         }
-        ReactiveLights = tempList.ToArray();
+        ReactiveLights = tempList;
     }
     
     public static void Update(float power)
     {
-        if (ReactiveLights.Length > 0)
-        {
-            for (int i = 0; i < ReactiveLights.Length; i++)
-            {
-                ReactiveLights[i].light.intensity = Mathf.Lerp(0f, ReactiveLights[i].originalIntensity, power*2);
-            }
-        }
+        for (int i = 0; i < ReactiveLights.Count; i++)
+            ReactiveLights[i].light.intensity = 
+                Mathf.Lerp(0f, ReactiveLights[i].originalIntensity, power * 2);
     }
 
     [HarmonyPatch(typeof(ShaderGlobals), "SetBandPower", new Type[] { typeof(int), typeof(float) })]
@@ -37,7 +34,8 @@ internal static class ReactiveLightUpdater
     {
         private static void Postfix(ShaderGlobals __instance, int band, float power)
         {
-            if (band == 1) Update(power);
+            if (ReactiveLights.Count == 0) return;
+            else if (band == 1) Update(power);
         }
     }
 

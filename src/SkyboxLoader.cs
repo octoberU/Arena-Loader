@@ -69,7 +69,6 @@ namespace ArenaLoader
                     skyboxes.Add(customSkybox);
                 }
             }
-            MelonLogger.Log($"Loaded {skyboxes.Count} skyboxes");
         }
 
         Texture2D LoadTextureFromPath(string path)
