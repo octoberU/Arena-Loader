@@ -15,7 +15,7 @@ namespace ArenaLoader
 {
     public class ArenaLoaderMod : MelonMod
     {
-        public const string VERSION = "0.2.3";
+        public const string VERSION = "0.2.4";
         public static string ArenaDirectory => Path.Combine(Directory.GetParent(Application.dataPath).ToString(), "Mods", "Arenas");
         public static string SkyboxDirectory => Path.Combine(ArenaDirectory, "Skyboxes");
 
