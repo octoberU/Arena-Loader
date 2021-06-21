@@ -12,8 +12,8 @@ namespace ArenaLoader
 
         public static void RegisterConfig()
         {
-            MelonPrefs.RegisterFloat(Category, nameof(bloomAmount), 0.5f, "Controls the amount of glow/bloom [0,3,0.1,0.5]");
-            MelonPrefs.RegisterString(Category, nameof(lastArena), "environment1", "Last loaded arena");
+            MelonPreferences.CreateEntry(Category, nameof(bloomAmount), 0.5f, "Controls the amount of glow/bloom [0,3,0.1,0.5]");
+            MelonPreferences.CreateEntry(Category, nameof(lastArena), "environment1", "Last loaded arena");
 
             OnModSettingsApplied();
         }
@@ -25,10 +25,10 @@ namespace ArenaLoader
                 if (fieldInfo.Name == "Category") continue;
 
                 if (fieldInfo.FieldType == typeof(float))
-                    fieldInfo.SetValue(null, MelonPrefs.GetFloat(Category, fieldInfo.Name));
+                    fieldInfo.SetValue(null, MelonPreferences.GetEntryValue<float>(Category, fieldInfo.Name));
 
                 if (fieldInfo.FieldType == typeof(string))
-                    fieldInfo.SetValue(null, MelonPrefs.GetString(Category, fieldInfo.Name));
+                    fieldInfo.SetValue(null, MelonPreferences.GetEntryValue<string>(Category, fieldInfo.Name));
             }
         }
     }
