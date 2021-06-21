@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Harmony;
+using HarmonyLib;
 
 internal static class ReactiveLightUpdater
 {
